@@ -1,0 +1,48 @@
+const mongoose = require('mongoose');
+const workerSchema = mongoose.Schema({
+    firs_name:{
+        type:String,
+        required:true,
+        minlength:3
+    },
+    last_name:{
+        type:String,
+        required:true,
+        minlength:3
+    },
+    adresse:{
+        type:String,
+        required:true
+    },
+    phone_number:{
+        type:Number,
+        required:true
+    },
+    province:{
+        type:String,
+        required:true
+    },
+    city:{
+        type:String,
+        required:true
+    },
+    cin:{
+        type:String,
+        required:true,
+    },
+    birth:{
+        birth_day:{
+            type:Date,
+            required:true
+        },
+        birth_city:{
+            type:String,
+            required:true
+        }
+    },
+    profession:{
+        type:String,
+        required:true
+    }
+})
+module.export = mongoose.module('Worker',workerSchema);
