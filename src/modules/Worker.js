@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
+
 const workerSchema = mongoose.Schema({
     firs_name:{
         type:String,
@@ -15,8 +17,15 @@ const workerSchema = mongoose.Schema({
         required:true
     },
     phone_number:{
-        type:Number,
-        required:true
+        type:String,
+        required:true,
+        unique:true
+    },
+    email:{
+        type:String,
+        unique:true,
+        lowercase:true,
+        match:[validator.isEmail, 'Adresse email invalide']
     },
     province:{
         type:String,
@@ -29,6 +38,7 @@ const workerSchema = mongoose.Schema({
     cin:{
         type:String,
         required:true,
+        unique:true
     },
     birth:{
         birth_day:{
@@ -43,6 +53,10 @@ const workerSchema = mongoose.Schema({
     profession:{
         type:String,
         required:true
+    },
+    password:{
+        type:String,
     }
-})
+},{timestamps:true});
+
 module.export = mongoose.module('Worker',workerSchema);

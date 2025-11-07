@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
+
 const userSchema = new mongoose.Schema({
     first_name:{
         type:String,
@@ -23,11 +25,19 @@ const userSchema = new mongoose.Schema({
         required:true
     },
     phone_number:{
-        type:Number,
-        required:true
+        type:String,
+        required:true,
+        unique:true
+    },
+    email:{
+        type:String,
+        unique:true,
+        lowercase:true,
+        match:[validator.isEmail, 'Invalid email']
     },
     cin:{
-        type:String
+        type:String,
+        unique:true
     },
     birth:{
         birth_day:{
@@ -36,6 +46,10 @@ const userSchema = new mongoose.Schema({
         birth_city:{
             type:String
         }
+    },
+    password:{
+        type:String
     }
-})
+},{timestamps:true});
+
 module.export = mongoose.module('User',userSchema);
