@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
-    first_name:{
+    firstName:{
         type:String,
         required:true,
         minlength:3
     },
-    family_name:{
+    lastName:{
         type:String,
         required:true,
         minlength:3
@@ -15,6 +14,10 @@ const userSchema = new mongoose.Schema({
     province:{
         type:String,
         required:true,
+    },
+    region: {
+        type: String,
+        required: true,
     },
     city:{
         type:String,
@@ -24,7 +27,11 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    phone_number:{
+    coordinates: {
+      type: [Number],
+      required:true
+    },
+    phoneNumber:{
         type:String,
         required:true,
         unique:true
@@ -33,22 +40,27 @@ const userSchema = new mongoose.Schema({
         type:String,
         unique:true,
         lowercase:true,
-        match:[validator.isEmail, 'Invalid email']
     },
     cin:{
         type:String,
         unique:true
     },
     birth:{
-        birth_day:{
+        day:{
             type:String
         },
-        birth_city:{
+        city:{
             type:String
         }
     },
     password:{
-        type:String
+        type:String,
+        required: true,
+    },
+    userType:{
+        type: String,
+        enum: ['worker', 'user'],
+        required:true
     }
 },{timestamps:true});
 

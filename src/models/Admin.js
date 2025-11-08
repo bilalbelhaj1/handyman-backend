@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 
 const adminSchema = mongoose.Schema({
-    first_name:{
+    firstName:{
         type:String,
         required:true
     },
-    family_name:{
+    lastName:{
         type:String,
         required:true
     },
@@ -17,7 +17,7 @@ const adminSchema = mongoose.Schema({
         lowercase:true,
         match:[validator.isEmail, 'Adresse email invalide']
     },
-    phone_number:{
+    phoneNumber:{
         type:String,
         required:true,
         unique:true
