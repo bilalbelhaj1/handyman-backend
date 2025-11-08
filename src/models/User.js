@@ -15,10 +15,6 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    region: {
-        type: String,
-        required: true,
-    },
     city:{
         type:String,
         required:true
@@ -29,7 +25,7 @@ const userSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number],
-      required:true
+      required:false
     },
     phoneNumber:{
         type:String,
