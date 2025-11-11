@@ -44,3 +44,35 @@ exports.register = async (req,res) => {
         return res.status(500).json({message:"Internal server error"});
     }
 }
+
+exports.login = async (req,res) => {
+    const {phone,password} = req.body;
+    try{
+        if(!phone || !password){
+            return res.status(400).json({message:'Phone number and password are required'});
+        }
+
+        const user = await User.findOne({phone});
+        
+        if(!user){
+            return res.status(400).json({message:'Invalid phone number'});
+        }
+
+        const passwordMatch = await bcrypt.compare(password,user.password);
+        if(!passwordMatch){
+            return res.status(400).json({message:"Invalid password"});
+        }
+
+        const token = jwt.sign(
+            {userId:user._id,phone:user.phoneNumber},
+            process.env.JWT_SECRET,
+            {expiresIn:process.env.JWT_EXPIRES_IN || '7d'}
+        )
+
+        return res.status(201).json({message:'Login successfull',token});
+
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:'Internal server error'});
+    }
+}
