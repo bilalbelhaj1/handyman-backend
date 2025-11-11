@@ -82,7 +82,7 @@ exports.editProfil = async (req,res) => {
     const userId = req.body.userId;
     console.log(req.body);
     try{
-        if(!email && !phone && !password && !profilePic){
+        if(!email && !phone && !oldPassword && !profilePic){
             return res.status(400).json({message:'Nothing to update'});
         }
         const user = await User.findById(userId);
@@ -98,14 +98,15 @@ exports.editProfil = async (req,res) => {
         if(profilePic){
             user.profilePicture = profilePic;
         }
-        const isMatch = await bcrypt.compare(user.password,oldPassword);
-        if(!isMatch){
-            return res.status(400).json({message:'Old password is incorrect'});
+        if(oldPassword && newPassword){
+            const isMatch = await bcrypt.compare(oldPassword,user.password);
+            if(!isMatch){
+                return res.status(400).json({message:'Old password is incorrect'});
+            }
+            user.password = await bcrypt.hash(newPassword,10);
         }
-        const hashedPassword = await bcrypt.hash(newPassword,10);
-        user.password = hashedPassword;
         await user.save();
-        return res.status(200).json({message:"Updates saved"},user);
+        return res.status(200).json({message:"Updates saved",user});
 
     }catch(err){
         console.error(err);
