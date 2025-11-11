@@ -53,7 +53,7 @@ exports.login = async (req,res) => {
         }
 
         const user = await User.findOne({phone});
-        
+
         if(!user){
             return res.status(400).json({message:'Invalid phone number'});
         }
@@ -70,6 +70,42 @@ exports.login = async (req,res) => {
         )
 
         return res.status(201).json({message:'Login successfull',token});
+
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:'Internal server error'});
+    }
+}
+
+exports.editProfil = async (req,res) => {
+    const {email,phone,oldPassword,newPassword,profilePic} = req.body;
+    const userId = req.body.userId;
+    console.log(req.body);
+    try{
+        if(!email && !phone && !password && !profilePic){
+            return res.status(400).json({message:'Nothing to update'});
+        }
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({message:'User not found'});
+        }
+        if(email){
+            user.email = email;
+        }
+        if(phone){
+            user.phoneNumber = phone;
+        }
+        if(profilePic){
+            user.profilePicture = profilePic;
+        }
+        const isMatch = await bcrypt.compare(user.password,oldPassword);
+        if(!isMatch){
+            return res.status(400).json({message:'Old password is incorrect'});
+        }
+        const hashedPassword = await bcrypt.hash(newPassword,10);
+        user.password = hashedPassword;
+        await user.save();
+        return res.status(200).json({message:"Updates saved"},user);
 
     }catch(err){
         console.error(err);

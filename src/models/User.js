@@ -57,6 +57,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['worker', 'user'],
         required:true
+    },
+    profilePicture:{
+        type:String,
+        default:''
     }
 },{timestamps:true});
 
