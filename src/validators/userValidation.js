@@ -1,7 +1,8 @@
 const Joi = require('joi')
 
-const userRegistrationSchema = Joi.object({
-    firstName: Joi.string()
+
+const userRegisterValidation = Joi.object({
+    Name: Joi.string()
        .min(3)
        .max(30)
        .required(),
@@ -13,33 +14,22 @@ const userRegistrationSchema = Joi.object({
        .min(10)
        .max(10)
        .required(),
-    profession: Joi.string()
+    province : Joi.string()
+       .max(100)
+       .required(),
+    city: Joi.string()
        .min(3)
-       .max(30)
+       .max(50)
        .required()
 })
 
-const userLoginSchema = Joi.object({
-    phoneNumber: Joi.string()
+const loginSchema = Joi.object({
+    phone: Joi.string()
        .min(10)
        .max(10)
        .required(),
     password: Joi.string()
        .min(8)
+       .max(30)
        .required()
-})
-
-const userProfileUpdate = Joi.object({
-    phoneNumber: Joi.string()
-       .min(10)
-       .max(10)
-       .optional(),
-    email: Joi.string()
-       .min(10)
-       .max(50)
-       .optional(),
-    bio: Joi.string()
-       .min(10)
-       .max(500)
-       .optional()
 })
