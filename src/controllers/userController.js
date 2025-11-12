@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const cookieParser = require('cookie-parser');
 
 
 exports.register = async (req,res) => {
@@ -66,10 +67,17 @@ exports.login = async (req,res) => {
         const token = jwt.sign(
             {userId:user._id,phone:user.phoneNumber},
             process.env.JWT_SECRET,
-            {expiresIn:process.env.JWT_EXPIRES_IN || '7d'}
+            {expiresIn:process.env.JWT_EXPIRES_IN || '15d'}
         )
 
-        return res.status(201).json({message:'Login successfull',token});
+        res.cookie('token',token,{
+            httpOnly:true,
+            secure:true,
+            sameSite:'Strict',
+            maxAge:1000*60*60*24*15
+        })
+
+        return res.status(201).json({message:'Login successfull'});
 
     }catch(err){
         console.error(err);
