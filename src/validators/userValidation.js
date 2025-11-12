@@ -1,7 +1,7 @@
 const Joi = require('joi')
 
 
-const userRegisterValidation = Joi.object({
+const userRegesterSchema = Joi.object({
     Name: Joi.string()
        .label("First Name")
        .min(3)
@@ -40,3 +40,5 @@ const loginSchema = Joi.object({
        .max(30)
        .required()
 })
+
+module.exports = { userRegesterSchema, loginSchema }
