@@ -61,6 +61,10 @@ const userSchema = new mongoose.Schema({
     profilePicture:{
         type:String,
         default:''
+    },
+    totalJobs:{
+        type:Number,
+        default:0
     }
 },{timestamps:true});
 

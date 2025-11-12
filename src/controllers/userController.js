@@ -2,7 +2,6 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const cookieParser = require('cookie-parser');
 
 
 exports.register = async (req,res) => {
