@@ -1,6 +1,5 @@
 
 const errorHandler = async (err, req, res, next) => {
-
     if(err.isOperational) return res.status(err.status).json({
         message: err.message
     })
