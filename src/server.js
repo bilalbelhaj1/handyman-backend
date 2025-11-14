@@ -5,6 +5,7 @@ const app = express()
 const PORT=8080
 
 app.use(cookieParser());
+
 app.get('/', (req, res)=>{
     res.send("Handy man backend")
 })

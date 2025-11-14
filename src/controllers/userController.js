@@ -76,7 +76,7 @@ exports.login = async (req,res) => {
             maxAge:1000*60*60*24*15
         })
 
-        return res.status(201).json({message:'Login successfull'});
+        return res.status(201).json({message:'Login successful'});
 
     }catch(err){
         console.error(err);
@@ -118,5 +118,15 @@ exports.editProfil = async (req,res) => {
     }catch(err){
         console.error(err);
         return res.status(500).json({message:'Internal server error'});
+    }
+}
+
+exports.deleteProfile = async (req,res) => {
+    const id = req.params.id;
+    try{
+        const user = await User.findByIdAndDelete(id);
+        return res.status(200).json({message:"Profile deleted",user});
+    }catch(err){
+        return res.status(500).json({message:"Internal server error"});
     }
 }
