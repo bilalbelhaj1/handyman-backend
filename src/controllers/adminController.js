@@ -1,23 +1,26 @@
-const Admin = require('../models/Admin.js');
+const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const jwt = requrie('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const transporter = nodemailer.createTransport({
     service:'gmail',
-    aut:{
+    auth:{
         user:process.env.EMAIL_ADMIN,
         pass:process.env.EMAIL_PASS
     }
 })
 exports.createNewAdmin = async (req, res) => {
     const {firstName, lastName, email, phoneNumber, role, cin} = req.body;
+
+    console.log(req.body);
+
     if(!firstName || !lastName || !email || !phoneNumber || !role || !cin){
         return res.status(400).json({message:"All fields are required"});
     }
     try{
-        const existingAdmin = Admin.findOne({email});
+        const existingAdmin = await Admin.findOne({email});
 
         if(existingAdmin){
             return res.status(400).json({message:"Admin already exists"});
@@ -58,6 +61,7 @@ exports.createNewAdmin = async (req, res) => {
         return res.status(201).json({message:"New admin added"});
         
     }catch(err){
+        console.log(err);
         return res.status(500).json({message:"Internal server error"});
     }
 }

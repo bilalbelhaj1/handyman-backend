@@ -24,4 +24,4 @@ const ratingSchema = new mongoose.Schema({
     }
 },{timestapms:true});
 
-module.export = mongoose.module('Rating',ratingSchema);
+module.export = mongoose.model('Rating',ratingSchema);
