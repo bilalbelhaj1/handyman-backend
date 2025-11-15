@@ -5,7 +5,7 @@ const crypto = require('crypto');
 
 
 exports.register = async (req,res) => {
-    const {Name,lastName,phoneNumber,province,city} = req.body;
+    const {Name,lastName,phoneNumber,province,city,role} = req.body;
     console.log(req.body);
     try{
         const existingUser = await User.findOne({phoneNumber});
@@ -34,6 +34,7 @@ exports.register = async (req,res) => {
             password:hashedPassword,
             phoneNumber,
             city,
+            role,
             province
         });
 
