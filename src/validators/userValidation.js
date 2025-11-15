@@ -1,31 +1,44 @@
 const Joi = require('joi')
 
 
-const userRegistrationSchema = Joi.object({
-    firstName: Joi.string()
+const userRegesterSchema = Joi.object({
+    Name: Joi.string()
+       .label("First Name")
        .min(3)
        .max(30)
        .required(),
     lastName: Joi.string()
+       .label("Last Name")
        .min(3)
        .max(30)
        .required(),
     phoneNumber: Joi.string()
+       .label("Phone Number")
        .min(10)
        .max(10)
        .required(),
-    profession: Joi.string()
+    province : Joi.string()
+       .label("Province")
+       .max(100)
+       .required(),
+    city: Joi.string()
+       .label("City")
        .min(3)
-       .max(30)
+       .max(50)
        .required()
 })
 
-const userLoginSchema = Joi.object({
-    phoneNumber: Joi.string()
+const loginSchema = Joi.object({
+    phone: Joi.string()
+       .label("Phone Number")
        .min(10)
        .max(10)
        .required(),
     password: Joi.string()
+       .label("Password")
        .min(8)
+       .max(30)
        .required()
 })
+
+module.exports = { userRegesterSchema, loginSchema }
