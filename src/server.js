@@ -9,10 +9,13 @@ const PORT=8080
 // routes 
 
 const adminRoutes = require('./routes/AdminRoutes');
+const userRoutes = require('./routes/UserRoutes');
+
 app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api', adminRoutes);
+app.use('/api', userRoutes);
 
 app.get('/', (req, res)=>{
     res.send("Handy man backend")

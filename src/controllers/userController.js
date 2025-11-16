@@ -1,11 +1,12 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const sendPasswordToUser = require('../tools/whatsappService');
 
 
 exports.register = async (req,res) => {
-    const {Name,lastName,phoneNumber,province,city,role} = req.body;
+    const {firstName,lastName,adresse,phoneNumber,province,city,role} = req.body;
     console.log(req.body);
     try{
         const existingUser = await User.findOne({phoneNumber});
@@ -29,14 +30,17 @@ exports.register = async (req,res) => {
         const {password, hashedPassword} = await hashPass();
 
         const newUser = await User.create({
-            firstName:Name,
-            familyName:lastName,
+            firstName:firstName,
+            lastName:lastName,
+            adresse,
             password:hashedPassword,
             phoneNumber,
             city,
             role,
             province
         });
+
+        await sendPasswordToUser(phoneNumber,password);
 
         return res.status(201).json({message:'User created successfully', user:newUser, generatedPassword:password});// <==== Generated password will be send to the user via WhatsApp
 
