@@ -1,5 +1,7 @@
 const express = require("express")
 const cookieParser = require('cookie-parser')
+const {connectDB} = require('./config/db');
+connectDB();
 
 const app = express()
 const PORT=8080
