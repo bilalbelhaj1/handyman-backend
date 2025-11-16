@@ -1,16 +1,12 @@
 const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const {sendEmail} = require('../tools/emailTransporter');
+const fs = require('fs');
+const path = require('path');
 
-const transporter = nodemailer.createTransport({
-    service:'gmail',
-    auth:{
-        user:process.env.EMAIL_ADMIN,
-        pass:process.env.EMAIL_PASS
-    }
-})
+
 exports.createNewAdmin = async (req, res) => {
     const {firstName, lastName, email, phoneNumber, role, cin} = req.body;
 
@@ -27,19 +23,15 @@ exports.createNewAdmin = async (req, res) => {
         }
 
         function generatePassword(){
-            const array = new Uint8Array(8);
-            crypto.getRandomValues(array);
-            const digits = Array.from(array, b=> String(b%10));
-            return digits.join('');
+            let pwd = '';
+            for(let i = 0;i < 8;i++){
+                pwd += crypto.randomInt(0,10);
+            }
+            return pwd;
         }
 
-        async function hashPass(){
-            const password = generatePassword();
-            const hashedPassword = await bcrypt.hash(passowrd,10);
-            return {password, hashedPassword};
-        }
-
-        const {password, hashedPassword} = await hashPass();
+        const password = generatePassword();
+        const hashedPassword = await bcrypt.hash(password,10);
 
         const newAdmin = await Admin.create({
             firstName,
@@ -51,12 +43,15 @@ exports.createNewAdmin = async (req, res) => {
             password:hashedPassword
         });
 
-        await transporter.sendMain({
-            from:process.env.EMAIL_ADMIN,
-            to:email,
-            subject:"Your Password",
-            text:`Hello ${firstName} ${lastName}, here is your password : ${password}.\nPlease change it later`
-        })
+        const filePath = path.join(__dirname,'../tools','adminPass.html');
+        let htmlTemplate = fs.readFileSync(filePath,'utf8');
+
+        htmlTemplate = htmlTemplate.replace('{{name}}',firstName).replace('{{password}}',password);
+
+        await sendEmail(email,
+                `Your Password Admin`,
+                `${firstName} ${lastName}, here is your password : ${password}`,
+                htmlTemplate);
 
         return res.status(201).json({message:"New admin added"});
         
