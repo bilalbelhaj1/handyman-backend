@@ -14,8 +14,7 @@ const adminSchema = new mongoose.Schema({
         type:String,
         required:true,
         unique:true,
-        lowercase:true,
-        match:[validator.isEmail, 'Adresse email invalide']
+        lowercase:true
     },
     phoneNumber:{
         type:String,

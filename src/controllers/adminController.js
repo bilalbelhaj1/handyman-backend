@@ -50,7 +50,7 @@ exports.createNewAdmin = async (req, res) => {
 
         await sendEmail(email,
                 `Your Password Admin`,
-                `${firstName} ${lastName}, here is your password : ${password}`,
+                `${firstName}, here is your password : ${password}`,
                 htmlTemplate);
 
         return res.status(201).json({message:"New admin added"});
