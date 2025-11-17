@@ -42,7 +42,7 @@ exports.register = async (req,res) => {
 
         await sendPasswordToUser(phoneNumber,password);
 
-        return res.status(201).json({message:'User created successfully', user:newUser, generatedPassword:password});// <==== Generated password will be send to the user via WhatsApp
+        return res.status(201).json({message:'User created successfully', user:newUser});
 
     }catch(err){
         console.error(err);
@@ -94,10 +94,14 @@ exports.editProfil = async (req,res) => {
     const userId = req.body.userId;
     console.log(req.body);
     try{
+        const user = await User.findById(userId);
+        if(user.banned === true){
+            return res.status(403).json({message:"You can't change profile. Contact support"});
+        }
+
         if(!email && !phone && !oldPassword && !profilePic){
             return res.status(400).json({message:'Nothing to update'});
         }
-        const user = await User.findById(userId);
         if(!user){
             return res.status(404).json({message:'User not found'});
         }
@@ -126,8 +130,32 @@ exports.editProfil = async (req,res) => {
     }
 }
 
+exports.totalJobs = async (req,res) => {
+    const {id, type, moneyEarned} = req.body;
+    console.log(req.body);
+    try{
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        user.totalJobs.jobNumber = user.totalJobs.jobNum || 0;
+        user.totalJobs.earnedMoney = user.totalJobs.earnedMoney || 0;
+
+        user.totalJobs.jobNumber += 1;
+        user.totalJobs.jobType = type;
+        user.totalJobs.earnedMoney += moneyEarned;
+
+        await user.save();
+        return res.status(200).json({message:"Total jobs updated",totalJobs:user.totalJobs});
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:"Internal server error"});
+    }
+}
+
 exports.deleteProfile = async (req,res) => {
-    const id = req.params.id;
+    const id = req.body.id;
     try{
         const user = await User.findByIdAndDelete(id);
         return res.status(200).json({message:"Profile deleted",user});

@@ -1,4 +1,5 @@
 const Admin = require('../models/Admin');
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -88,13 +89,14 @@ exports.login = async (req,res) => {
 
         res.cookie('token',token,{
             httpOnly:true,
-            secure:true,
-            sameSite:'String',
+            secure:false,
+            sameSite:'lax',
             maxAge: 1000*60*60*24
         })
 
         return res.status(201).json({message:"Login successful"})
     }catch(err){
+        console.error(err);
         return res.status(500).json({message:"Internal server error"});
     }
 }
@@ -104,7 +106,7 @@ exports.editAdminInfo = async (req,res) => {
     
     try{
 
-        if(!email && !phoneNumber && !!oldPassword && !profilePicture){
+        if(!email && !phoneNumber && !oldPassword && !profilePicture){
             return res.status(400).json({message:"Nothing to update"});
         }
         
@@ -145,12 +147,38 @@ exports.getAllAdmins = async (req,res) => {
     }
 }
 
+exports.banUser = async (req,res) =>{
+    const {id,ban} = req.body;
+    if(!id){
+        return res.status(400).json({message:"Id is required"});
+    }
+    try{
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        user.banned = ban;
+        await user.save();
+
+        if(user.banned === false){
+            return res.status(200).json({message:"User unbanned successfully",user});
+        }
+
+        return res.status(200).json({message:"User banned successfully",user});
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:"Internal server error"});
+    }
+}
+
 exports.deleteAdmin = async (req,res) => {
-    const id = req.params.id;
+    const id = req.body.id;
     try{
         const admin = await Admin.findByIdAndDelete(id);
         return res.status(200).json({message:"Admin deleted",admin});
     }catch(err){
+        console.error(err);
         return res.status(500).json({message:"Internal server error"});
     }
 }

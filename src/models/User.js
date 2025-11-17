@@ -63,8 +63,13 @@ const userSchema = new mongoose.Schema({
         default:''
     },
     totalJobs:{
-        type:Number,
-        default:0
+        jobNumber:{type:Number,default:0},
+        jobType:{type:String},
+        earnedMoney:{type:Number,default:0}
+    },
+    banned:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true});
 
