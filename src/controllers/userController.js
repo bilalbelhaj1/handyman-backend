@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Job = require('../models/Job');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -105,6 +106,9 @@ exports.editProfil = async (req,res) => {
         if(!user){
             return res.status(404).json({message:'User not found'});
         }
+        if(user.banned === true){
+            return res.status(403).json({message:"You can't change profile. Contact support"});
+        }
         if(email){
             user.email = email;
         }
@@ -158,6 +162,11 @@ exports.deleteProfile = async (req,res) => {
     const id = req.body.id;
     try{
         const user = await User.findByIdAndDelete(id);
+        const _user = await User.findById(id);
+
+        if(_user.banned === true){
+            return res.status(403).json({message:"You can't delete your account. Contact support"});
+        }
         return res.status(200).json({message:"Profile deleted",user});
     }catch(err){
         return res.status(500).json({message:"Internal server error"});

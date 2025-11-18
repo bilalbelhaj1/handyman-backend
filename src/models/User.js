@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { totalJobs } = require('../controllers/userController');
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -62,14 +63,13 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:''
     },
-    totalJobs:{
-        jobNumber:{type:Number,default:0},
-        jobType:{type:String},
-        earnedMoney:{type:Number,default:0}
-    },
     banned:{
         type:Boolean,
         default:false
+    },
+    totalJobs:{
+        jobsNumber:{type:Number,default:0},
+        totalEarned:{type:Number,default:0}
     }
 },{timestamps:true});
 
