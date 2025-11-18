@@ -59,6 +59,10 @@ const userSchema = new mongoose.Schema({
         enum: ['worker', 'user'],
         required:true
     },
+    rating:{
+        type:Number,
+        default:0
+    },
     profilePicture:{
         type:String,
         default:''
