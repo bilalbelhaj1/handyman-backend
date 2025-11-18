@@ -1,4 +1,5 @@
 const Admin = require('../models/Admin');
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -8,14 +9,20 @@ const path = require('path');
 
 
 exports.createNewAdmin = async (req, res) => {
-    const {firstName, lastName, email, phoneNumber, role, cin} = req.body;
+    const {ownerId, firstName, lastName, email, phoneNumber, role, cin} = req.body;
 
     console.log(req.body);
 
-    if(!firstName || !lastName || !email || !phoneNumber || !role || !cin){
+    if(!ownerId || !firstName || !lastName || !email || !phoneNumber || !role || !cin){
         return res.status(400).json({message:"All fields are required"});
     }
     try{
+        const owner = await Admin.findById(ownerId);
+
+        if(!owner || owner.role === 'admin'){
+            return res.status(403).json({message:"You can't make this action"});
+        }
+
         const existingAdmin = await Admin.findOne({email});
 
         if(existingAdmin){
@@ -136,6 +143,29 @@ exports.editAdminInfo = async (req,res) => {
     }
 }
 
+exports.banUser = async (req,res) => {
+    const {id, banState} = req.body;
+    try{
+        const user = await User.findById(id);
+
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        user.banned = banState;
+
+        if(user.banned === true){
+            return res.status(200).json({message:"User banned successfully!"});
+        }else{
+            return res.status(200).json({message:"User unbanned successfully"});
+        }
+
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:"Interrnal server error"});
+    }
+}
+
 exports.getAllAdmins = async (req,res) => {
     try{
         const admins = await Admin.find().select('-password');
@@ -146,9 +176,16 @@ exports.getAllAdmins = async (req,res) => {
 }
 
 exports.deleteAdmin = async (req,res) => {
-    const id = req.params.id;
+    const {ownerId, id} = req.body;
+
     try{
+        const owner = await User.findById(ownerId);
+        if(!owner){
+            return res.status(403).json({message:"You can't make this action"});
+        }
+
         const admin = await Admin.findByIdAndDelete(id);
+
         return res.status(200).json({message:"Admin deleted",admin});
     }catch(err){
         return res.status(500).json({message:"Internal server error"});

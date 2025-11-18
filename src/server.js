@@ -14,8 +14,8 @@ const userRoutes = require('./routes/UserRoutes');
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/api', adminRoutes);
-app.use('/api', userRoutes);
+app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
 
 app.get('/', (req, res)=>{
     res.send("Handy man backend")
