@@ -1,5 +1,5 @@
-const Job = require('../models/jobController');
-const admin = require('../models/adminController');
+const Job = require('../models/Job');
+const Admin = require('../models/adminController');
 
 exports.addJob = async (req,res) => {
     const {adminId, jobName, category, description} = req.body;
@@ -9,7 +9,7 @@ exports.addJob = async (req,res) => {
     }
 
     try{
-        const admin = await User.findById(adminId);
+        const admin = await Admin.findById(adminId);
 
         if(!admin){
             return res.status(400).json({message:"Admin not found"});
@@ -43,7 +43,7 @@ exports.editJob = async (req,res) => {
     const {adminId,oldJobName, newJobName, newDescription, newCategory} = req.body;
     
     try{
-        const admin = await User.findById(adminId);
+        const admin = await Admin.findById(adminId);
 
         if(!admin){
             return res.status(400).json({message:"Admin not found"});
@@ -82,7 +82,7 @@ exports.deleteJob = async (req,res) => {
     }
     
     try{
-        const admin = await User.findById(id);
+        const admin = await Admin.findById(id);
 
         if(!admin){
             return res.status(400).json({message:"Admin not found"});
