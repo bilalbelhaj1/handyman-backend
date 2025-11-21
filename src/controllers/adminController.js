@@ -1,8 +1,7 @@
 const Admin = require('../models/Admin');
 const User = require('../models/User');
-const Job = require('../models/Job');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
+const genPassword = require('../tools/generatePassword');
 const jwt = require('jsonwebtoken');
 const {sendEmail} = require('../tools/emailTransporter');
 const fs = require('fs');
@@ -30,15 +29,7 @@ exports.createNewAdmin = async (req, res) => {
             return res.status(400).json({message:"Admin already exists"});
         }
 
-        function generatePassword(){
-            let pwd = '';
-            for(let i = 0;i < 8;i++){
-                pwd += crypto.randomInt(0,10);
-            }
-            return pwd;
-        }
-
-        const password = generatePassword();
+        const password = genPassword();
         const hashedPassword = await bcrypt.hash(password,10);
 
         const newAdmin = await Admin.create({

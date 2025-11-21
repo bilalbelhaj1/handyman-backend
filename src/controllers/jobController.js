@@ -1,5 +1,5 @@
 const Job = require('../models/Job');
-const Admin = require('../models/adminController');
+const Admin = require('../models/Admin');
 
 exports.addJob = async (req,res) => {
     const {adminId, jobName, category, description} = req.body;

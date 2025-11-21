@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { totalJobs } = require('../controllers/userController');
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -35,12 +34,12 @@ const userSchema = new mongoose.Schema({
     },
     email:{
         type:String,
-        unique:true,
         lowercase:true,
     },
     cin:{
         type:String,
-        unique:true
+        unique:true,
+        sparse:true
     },
     birth:{
         day:{

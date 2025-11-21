@@ -2,8 +2,8 @@ const User = require('../models/User');
 const Job = require('../models/Job');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 const sendPasswordToUser = require('../tools/whatsappService');
+const genPassword = require('../tools/generatePassword');
 
 
 exports.register = async (req,res) => {
@@ -15,20 +15,8 @@ exports.register = async (req,res) => {
             return res.status(400).json({message:"User already exists"});
         }
 
-        function genreratePassword(){
-            const array = new Uint8Array(8);
-            crypto.getRandomValues(array);
-            const digits = Array.from(array,b=> String(b%10));
-            return digits.join('');
-        }
-
-        async function hashPass(){
-            const password = genreratePassword();
-            const hashedPassword = await bcrypt.hash(password,10);
-            return {password,hashedPassword};
-        }
-
-        const {password, hashedPassword} = await hashPass();
+        const password = genPassword();
+        const hashedPassword = await bcrypt.hash(password,10);
 
         const newUser = await User.create({
             firstName:firstName,
